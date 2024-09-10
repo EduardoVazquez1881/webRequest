@@ -18,6 +18,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def get_response(self):
         return f"""
     <h1> Hola Web </h1>
+    <h1>{self.url().path.split('/')[-2]}: {self.url().path.split('/')[-1]} {self.query_data()} <h1>
     <p> URL Parse Result : {self.url()}         </p>
     <p> Path Original: {self.path}         </p>
     <p> Headers: {self.headers}      </p>
