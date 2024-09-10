@@ -1,6 +1,13 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qsl, urlparse
 
+def leer_archivo_html(nombre_archivo): #Estoy creado este metodo para leer un archivo el cual asignara el parametro
+    try:
+        with open(nombre_archivo, 'r', encoding="utf-8") as archivo:
+            return archivo.read()
+    except FileNotFoundError:
+        return "<h1>Error 404: Archivo no encontrado</h1>"
+
 
 class WebRequestHandler(BaseHTTPRequestHandler):
     def url(self):
@@ -10,10 +17,11 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         return dict(parse_qsl(self.url().query))
 
     def do_GET(self):
+        contenido = leer_archivo_html('home.html') #Estoy enviando el nombre del archivo como parametro al metodo creado
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
         self.end_headers()
-        self.wfile.write(self.get_response().encode("utf-8"))
+        self.wfile.write(contenido.encode("utf-8")) #Estoy ejectuando el servidor con la vista almacenada en contenido en lugar de get_response
 
     def get_response(self):
         return f"""
