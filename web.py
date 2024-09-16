@@ -1,6 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qsl, urlparse
 
+# Definición del contenido para diferentes rutas en el diccionario 'contenido'
 contenido = {
     '/': """
     <html lang="es">
@@ -13,7 +14,6 @@ contenido = {
       <body>
         <h1>Ana Lee </h1>
         <h2>Desarrolladora Web (Música/Diseño/Empresaria)</h2>
-        <small>Este texto fue generado por Copilot:</small>
         <h3>
           ¡Hola! Soy Ana Lee, una desarrolladora web que se especializa en la creación
           de sitios web y aplicaciones web. Me encanta trabajar con tecnologías web modernas.
@@ -46,23 +46,27 @@ contenido = {
     </html>
     """
 }
-
-
-def leer_archivo_html(nombre_archivo): #Estoy creado este metodo para leer un archivo el cual asignara el parametro
+# Función para leer archivos HTML desde el sistema de archivos
+def leer_archivo_html(nombre_archivo): 
+    # Esta función intenta leer un archivo HTML del sistema de archivos. Si el archivo no existe, devuelve un mensaje de error 404.
     try:
         with open(nombre_archivo, 'r', encoding="utf-8") as archivo:
             return archivo.read()
     except FileNotFoundError:
         return "<h1>Error 404: Archivo no encontrado</h1>"
 
-
+# Clase que maneja las solicitudes HTTP GET
 class WebRequestHandler(BaseHTTPRequestHandler):
+    
+    # Método para analizar la URL de la solicitud y obtener sus componentes
     def url(self):
         return urlparse(self.path)
 
+    # Método para convertir la cadena de consulta en un diccionario clave-valor
     def query_data(self):
         return dict(parse_qsl(self.url().query))
     
+    # Método para manejar solicitudes GET
     def do_GET(self):
         # Obtener la ruta solicitada
         path = self.path
@@ -71,25 +75,19 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         content = contenido.get(path, None)
         
         if content:
-            # Si existe el contenido para esa ruta, devolverlo
-            self.send_response(200)
-            self.send_header("Content-Type", "text/html")
-            self.end_headers()
-            self.wfile.write(content.encode("utf-8"))
+            # Si existe contenido para la ruta solicitada:
+            self.send_response(200)  # Envía un código de respuesta HTTP 200 (OK)
+            self.send_header("Content-Type", "text/html")  # Añade una cabecera que indica que el contenido es HTML
+            self.end_headers()  # Finaliza el envío de cabeceras
+            self.wfile.write(content.encode("utf-8"))  # Escribe y envía el contenido HTML codificado en UTF-8
         else:
-            # Si no existe, devolver un error 404
-            self.send_response(404)
-            self.send_header("Content-Type", "text/html")
-            self.end_headers()
-            self.wfile.write("<h1>Página no encontrada</h1>".encode("utf-8"))
+            # Si no existe contenido para la ruta solicitada:
+            self.send_response(404)  # Envía un código de respuesta HTTP 404 (Página no encontrada)
+            self.send_header("Content-Type", "text/html")  # Añade una cabecera indicando que el contenido devuelto es HTML
+            self.end_headers()  # Finaliza el envío de cabeceras
+            self.wfile.write("<h1>Página no encontrada</h1>".encode("utf-8"))  # Escribe y envía un mensaje de error en HTML
 
-    ##def do_GET(self):
-    ##    contenido = leer_archivo_html('home.html') #Estoy enviando el nombre del archivo como parametro al metodo creado
-    ##    self.send_response(200)
-    ##    self.send_header("Content-Type", "text/html")
-    ##    self.end_headers()
-    ##    self.wfile.write(contenido.encode("utf-8")) #Estoy ejectuando el servidor con la vista almacenada en contenido en lugar de get_response
-
+    # Método adicional que no se utiliza actualmente, pero devuelve detalles de la solicitud
     def get_response(self):
         return f"""
     <h1> Hola Web </h1>
@@ -100,8 +98,8 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     <p> Query: {self.query_data()}   </p>
 """
 
-
+# Inicialización del servidor
 if __name__ == "__main__":
     print("Starting server")
-    server = HTTPServer(("localhost", 8000), WebRequestHandler)
-    server.serve_forever()
+    server = HTTPServer(("localhost", 8000), WebRequestHandler)  # Inicia el servidor en localhost en el puerto 8000
+    server.serve_forever()  # Mantiene el servidor en ejecución de forma indefinida
