@@ -101,6 +101,6 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 # Inicialización del servidor
 if __name__ == "__main__":
     print("Starting server")
-    print("prueba")
+    print("Puerto 8000")
     server = HTTPServer(("0.0.0.0", 8000), WebRequestHandler)  # Inicia el servidor en localhost en el puerto 8000
     server.serve_forever()  # Mantiene el servidor en ejecución de forma indefinida
