@@ -73,29 +73,43 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         
         # Buscar en el diccionario el contenido correspondiente a la ruta
         content = contenido.get(path, None)
+                    # Si existe contenido para la ruta solicitada:
+        self.send_response(200)  # Envía un código de respuesta HTTP 200 (OK)
+        self.send_header("Content-Type", "text/html")  # Añade una cabecera que indica que el contenido es HTML
+        self.end_headers()  # Finaliza el envío de cabeceras
+        self.wfile.write(self.get_response().encode("utf-8"))  # Escribe y envía el contenido HTML codificado en UTF-8
         
-        if content:
-            # Si existe contenido para la ruta solicitada:
-            self.send_response(200)  # Envía un código de respuesta HTTP 200 (OK)
-            self.send_header("Content-Type", "text/html")  # Añade una cabecera que indica que el contenido es HTML
-            self.end_headers()  # Finaliza el envío de cabeceras
-            self.wfile.write(content.encode("utf-8"))  # Escribe y envía el contenido HTML codificado en UTF-8
-        else:
-            # Si no existe contenido para la ruta solicitada:
-            self.send_response(404)  # Envía un código de respuesta HTTP 404 (Página no encontrada)
-            self.send_header("Content-Type", "text/html")  # Añade una cabecera indicando que el contenido devuelto es HTML
-            self.end_headers()  # Finaliza el envío de cabeceras
-            self.wfile.write("<h1>Página no encontrada</h1>".encode("utf-8"))  # Escribe y envía un mensaje de error en HTML
+# Método para manejar solicitudes GET
+    def do_POST(self):
+        # Obtener la ruta solicitada
+        path = self.path
+        
+        # Buscar en el diccionario el contenido correspondiente a la ruta
+        content = contenido.get(path, None)
+                    # Si existe contenido para la ruta solicitada:
+        self.send_response(200)  # Envía un código de respuesta HTTP 200 (OK)
+        self.send_header("Content-Type", "text/html")  # Añade una cabecera que indica que el contenido es HTML
+        self.end_headers()  # Finaliza el envío de cabeceras
+        self.wfile.write(self.get_response().encode("utf-8"))  # Escribe y envía el contenido HTML codificado en UTF-8
+        
 
     # Método adicional que no se utiliza actualmente, pero devuelve detalles de la solicitud
     def get_response(self):
         return f"""
-    <h1> Hola Web </h1>
-    <h1>{self.url().path.split('/')[-2]}: {self.url().path.split('/')[-1]} {self.query_data()} <h1>
-    <p> URL Parse Result : {self.url()}         </p>
-    <p> Path Original: {self.path}         </p>
-    <p> Headers: {self.headers}      </p>
-    <p> Query: {self.query_data()}   </p>
+    <h1> Formulario </h1>
+    <form action="" method="post" class="forma-ejemplo">
+        <div class="forma">
+	    <label for="nombre">Nombre:</label>
+	    <input type="text" name="nombre" id="nombre" required/>
+        </div>
+         <div class="forma">
+	        <label for="correo">Correo:</label>
+	        <input type="correo" name="correo" id="correo" required/>
+        </div>
+        <div class="forma">
+	        <input type="submit" vale="Registrate"/>
+        </div>
+    </form>
 """
 
 # Inicialización del servidor
